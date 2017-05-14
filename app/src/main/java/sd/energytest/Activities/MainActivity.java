@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences settings;
     private ConnectivityManager connectivityManager;
     private boolean conexion;
+    private String [] capitulos;
+    private String [] fechas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +56,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Comprobamos la conexion a internet para la carga de imagenes
         settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             conexion = true;
-
 
         }else{
             conexion = false;
@@ -70,9 +72,18 @@ public class MainActivity extends AppCompatActivity
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                capitulos = new String[listSeries.getmSeries().get(position).getCapitulos().size()];
+                fechas = new String[listSeries.getmSeries().get(position).getCapitulos().size()];
+                for(int i = 0; i<capitulos.length; i++){
+                    capitulos[i] = listSeries.getmSeries().get(position).getCapitulos().get(i).getNombre();
+                    fechas[i] = listSeries.getmSeries().get(position).getCapitulos().get(i).getFecha();
+                }
+
                 Intent in = new Intent(MainActivity.this, DetalleSerie.class);
                 in.putExtra("titulo", listSeries.getmSeries().get(position).getTitulo());
                 in.putExtra("fanart", listSeries.getmSeries().get(position).getCapitulos().get(0).getFanart());
+                in.putExtra("capitulos", capitulos);
+                in.putExtra("fechas", fechas);
                 startActivity(in);
             }
         });
@@ -83,8 +94,8 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
 
 
+        //Comprobamos si es la primera vez que iniciamos o no
         if (settings.getBoolean("firstrun", true)) {
-            Log.d("Preferencias: ", "Mi primera vez");
             listSeries = new ListSeries(this, gridView, "primera_vez", conexion);
             listSeries.execute();
             // Lo cambiamos a false para que no vuelva a ejecutarlo
@@ -92,7 +103,6 @@ public class MainActivity extends AppCompatActivity
         }else{
             listSeries = new ListSeries(this, gridView, "otra_vez", conexion);
             listSeries.execute();
-            Log.d("Preferencias: ", "Mi segunda vez");
         }
 
     }
@@ -109,19 +119,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //Actualizamos el contenido
         if (id == R.id.actualizar) {
             listSeries = new ListSeries(this, gridView, "actualizar", conexion);
             listSeries.execute();

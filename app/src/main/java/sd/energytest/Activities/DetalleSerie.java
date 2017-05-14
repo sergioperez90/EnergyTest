@@ -9,15 +9,17 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import java.io.InputStream;
 import java.net.URL;
 
+import sd.energytest.Adapters.AdapterList;
 import sd.energytest.R;
 
 public class DetalleSerie extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
-
+    private ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,10 +27,19 @@ public class DetalleSerie extends AppCompatActivity {
 
         String titulo = getIntent().getStringExtra("titulo");
         String fanart = getIntent().getStringExtra("fanart");
+        String [] capitulos =  getIntent().getStringArrayExtra("capitulos");
+        String [] fechas =  getIntent().getStringArrayExtra("fechas");
+        setTitle(titulo);
+
 
         ImageView fanArt = (ImageView) findViewById(R.id.fanArt);
+        listView = (ListView) findViewById(R.id.capitulos);
 
-        setTitle(titulo);
+        AdapterList adapter = new
+                AdapterList(DetalleSerie.this, capitulos, fechas);
+        listView.setAdapter(adapter);
+
+
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -38,6 +49,7 @@ public class DetalleSerie extends AppCompatActivity {
             }
         }
     }
+
 
     //Clase que permite cargar las imagenes
     class LoadImage extends AsyncTask<String, Void, Bitmap> {
