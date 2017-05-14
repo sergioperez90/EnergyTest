@@ -39,9 +39,9 @@ public class AdapterSQLite {
 
         if(!comprobarSerie(titulo)){
             db.insert("serie", null, registro);
-            Log.e("SERIE","insertada correctamente");
+            //Log.e("SERIE","insertada correctamente");
         }else{
-            Log.e("SERIE","la serie ya existe");
+            //Log.e("SERIE","la serie ya existe");
         }
 
         ContentValues registro2 = new ContentValues();
@@ -53,9 +53,9 @@ public class AdapterSQLite {
 
             if(!comprobarCapitulo(capitulos[i].getTitle(), titulo)){
                 db.insert("capitulo", null, registro2);
-                Log.e("CAPIUTLO","insertado correctamente");
+                //Log.e("CAPIUTLO","insertado correctamente");
             }else {
-                Log.e("CAPITULO", "el capitulo ya existe");
+                //Log.e("CAPITULO", "el capitulo ya existe");
             }
         }
 
@@ -102,8 +102,6 @@ public class AdapterSQLite {
                 String titulo = fila.getString(fila.getColumnIndex("titulo"));
                 String numtemporadas = fila.getString(fila.getColumnIndex("numtemporadas"));
                 String poster = fila.getString(fila.getColumnIndex("poster"));
-                //System.out.println("Serie: " + titulo + " "+ numtemporadas+" " +poster);
-                //series = selectCapitulos(titulo, numtemporadas, poster);
                 serie = new Serie(titulo, numtemporadas, poster);
                 capitulo = selectCapitulo(titulo);
                 for(int i = 0; i<capitulo.length; i++){

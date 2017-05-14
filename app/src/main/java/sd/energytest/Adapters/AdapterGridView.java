@@ -3,7 +3,10 @@ package sd.energytest.Adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +32,15 @@ public final class AdapterGridView extends BaseAdapter {
     private final List<Item> mItems = new ArrayList<Item>();
     private final LayoutInflater mInflater;
     private ArrayList<Serie> series;
-    public AdapterGridView(Context context, ArrayList<Serie> series) {
+    private boolean conexion;
+
+    public AdapterGridView(Context context, ArrayList<Serie> series, boolean conexion) {
         this.series = series;
 
         mInflater = LayoutInflater.from(context);
-
+        this.conexion = conexion;
         for(int i = 0; i<series.size(); i++){
-            mItems.add(new Item(series.get(i).getTitulo(), R.drawable.logotipo, series.get(i).getNumTemporadas() + " temporadas"));
+            mItems.add(new Item(series.get(i).getTitulo(), R.drawable.defecto, series.get(i).getNumTemporadas() + " temporadas"));
         }
 
     }
@@ -75,7 +80,10 @@ public final class AdapterGridView extends BaseAdapter {
         name = (TextView) v.getTag(R.id.text);
         temp = (TextView) v.getTag(R.id.temporadas);
 
-        new LoadImage(picture).execute(series.get(i).getPoster());
+        if(conexion){
+            new LoadImage(picture).execute(series.get(i).getPoster());
+        }
+
 
         Item item = getItem(i);
 
@@ -114,7 +122,7 @@ public final class AdapterGridView extends BaseAdapter {
             try {
                 mIcon11 = BitmapFactory.decodeStream((InputStream) new URL(urldisplay).getContent());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("ERROR", "La URL ya no esta disponible");
             }
             return mIcon11;
         }

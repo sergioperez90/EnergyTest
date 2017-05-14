@@ -29,7 +29,7 @@ import sd.energytest.R;
  * Created by sergio on 13/5/17.
  */
 
-public class ListSeries extends AsyncTask<Void, Void, ArrayAdapter<String>> {
+public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
     private Collection<TvShow> tvShows;
     private TvShow [] series;
     private Chapter [] capitulos;
@@ -39,15 +39,20 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayAdapter<String>> {
     private Catalog catalogo;
     private AdapterSQLite sqlAdapter;
     private GridView gridView;
-
+    private String pref;
+    private boolean conexion;
+    private boolean hayconexioninternet;
     private ArrayList<Serie> mSeries;
 
-    public ListSeries(Context context, GridView gridView){
+    public ListSeries(Context context, GridView gridView, String pref, boolean hayconexioninternet){
         this.context = context;
         catalogo = new Catalog();
         sqlAdapter = new AdapterSQLite(this.context);
         this.gridView = gridView;
         mSeries = new ArrayList<Serie>();
+        this.pref = pref;
+        this.conexion = true;
+        this.hayconexioninternet = hayconexioninternet;
     }
 
     @Override
@@ -61,41 +66,55 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayAdapter<String>> {
     }
 
     @Override
-    protected ArrayAdapter<String>doInBackground(Void...arg0){
+    protected ArrayList<Serie>doInBackground(Void...arg0){
         //Cargamos las series en un array de TvShow que son series
-        try{
-            //Recorremos el array completo y vamos guardando en sqlite para no volver a conectar con el servidor
-            tvShows = catalogo.getTvShows();
-            series = new TvShow[tvShows.size()];
-            tvShows.toArray(series);
-            for(int i = 0; i<series.length; i++){
-                capitulos = new Chapter[series[i].getChapters().getChapters().size()];
-                series[i].getChapters().getChapters().toArray(capitulos);
-                sqlAdapter.create(series[i].getTitle(), series[i].getNumberOfSeasons(), series[i].getPoster(), series[i].getFanArt(), capitulos);
+        if(pref.equalsIgnoreCase("primera_vez") || pref.equalsIgnoreCase("actualizar")){
+            try{
+                //Recorremos el array completo y vamos guardando en sqlite para no volver a conectar con el servidor
+                tvShows = catalogo.getTvShows();
+                series = new TvShow[tvShows.size()];
+                tvShows.toArray(series);
+                for(int i = 0; i<series.length; i++){
+                    capitulos = new Chapter[series[i].getChapters().getChapters().size()];
+                    series[i].getChapters().getChapters().toArray(capitulos);
+                    sqlAdapter.create(series[i].getTitle(), series[i].getNumberOfSeasons(), series[i].getPoster(), series[i].getFanArt(), capitulos);
+                }
+
+
+            }catch (ConnectException e){
+                Log.e("ERROR", "ERROR EN LA CONEXION");
+                conexion = false;
+            }catch(IOException e){
+                e.printStackTrace();
             }
 
-            //Guardo en una base de datos local
             mSeries = sqlAdapter.selectAll();
-
-
-        }catch (ConnectException e){
-            Log.e("ERROR", "ERROR EN LA CONEXION");
-        }catch(IOException e){
-            e.printStackTrace();
+        }else{
+            mSeries = sqlAdapter.selectAll();
         }
 
-    return null;
+    return mSeries;
+
     }
 
     @Override
-    protected void onPostExecute(ArrayAdapter<String>result){
-        super.onPostExecute(result);
+    protected void onPostExecute(ArrayList<Serie> series) {
+        super.onPostExecute(series);
 
-        gridView.setAdapter(new AdapterGridView(context, mSeries));
+        if(!conexion){
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Error de conexión");
+            alert.setMessage("Comprueba que estas conectado a una red wifi o de datos moviles");
+            alert.setPositiveButton("OK",null);
+            alert.show();
+        }
+
+        gridView.setAdapter(new AdapterGridView(context, series, hayconexioninternet));
 
         pDialog.dismiss();
-
     }
+
+
 
     public ArrayList<Serie> getmSeries(){
         return mSeries;

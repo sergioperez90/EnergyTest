@@ -1,9 +1,14 @@
 package sd.energytest.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 
 import sd.energytest.Adapters.AdapterGridView;
@@ -24,6 +30,10 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ListSeries listSeries;
     private GridView gridView;
+    final String PREFS_NAME = "MisPrefs";
+    private SharedPreferences settings;
+    private ConnectivityManager connectivityManager;
+    private boolean conexion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +44,6 @@ public class MainActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -52,6 +54,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            conexion = true;
+
+
+        }else{
+            conexion = false;
+        }
         gridView = (GridView)findViewById(R.id.gridview);
 
 
@@ -70,8 +82,18 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        listSeries = new ListSeries(this, gridView);
-        listSeries.execute();
+
+        if (settings.getBoolean("firstrun", true)) {
+            Log.d("Preferencias: ", "Mi primera vez");
+            listSeries = new ListSeries(this, gridView, "primera_vez", conexion);
+            listSeries.execute();
+            // Lo cambiamos a false para que no vuelva a ejecutarlo
+            settings.edit().putBoolean("firstrun", false).commit();
+        }else{
+            listSeries = new ListSeries(this, gridView, "otra_vez", conexion);
+            listSeries.execute();
+            Log.d("Preferencias: ", "Mi segunda vez");
+        }
 
     }
 
@@ -101,10 +123,11 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.actualizar) {
-            return true;
+            listSeries = new ListSeries(this, gridView, "actualizar", conexion);
+            listSeries.execute();
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -113,7 +136,7 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.home) {
 
         }
 

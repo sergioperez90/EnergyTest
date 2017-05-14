@@ -1,7 +1,10 @@
 package sd.energytest.Activities;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import java.net.URL;
 import sd.energytest.R;
 
 public class DetalleSerie extends AppCompatActivity {
+    private ConnectivityManager connectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +29,13 @@ public class DetalleSerie extends AppCompatActivity {
         ImageView fanArt = (ImageView) findViewById(R.id.fanArt);
 
         setTitle(titulo);
+        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (fanart!= null) {
-            new LoadImage(fanArt).execute(fanart);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            if (fanart != null) {
+                new LoadImage(fanArt).execute(fanart);
+            }
         }
     }
 
