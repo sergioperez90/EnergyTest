@@ -8,12 +8,12 @@ import java.util.ArrayList;
 
 public class Serie {
     private String titulo;
-    private int numtemporadas;
+    private String numtemporadas;
     private String poster;
     private ArrayList<Capitulo> capitulos;
     private Capitulo capitulo;
 
-    Serie(String titulo, int numtemporadas, String poster){
+    public Serie(String titulo, String numtemporadas, String poster){
         this.titulo = titulo;
         this.numtemporadas = numtemporadas;
         this.poster = poster;
@@ -25,7 +25,7 @@ public class Serie {
         return this.titulo;
     }
 
-    public int getNumTemporadas(){
+    public String getNumTemporadas(){
         return this.numtemporadas;
     }
 
@@ -36,6 +36,10 @@ public class Serie {
     public void addCapitulo(String nombre, String fecha, String fanart){
         capitulo = new Capitulo(nombre, fecha, fanart);
         capitulos.add(capitulo);
+    }
+
+    public ArrayList<Capitulo> getCapitulos(){
+        return capitulos;
     }
 
 }

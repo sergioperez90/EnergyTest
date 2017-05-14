@@ -1,5 +1,6 @@
-package sd.energytest;
+package sd.energytest.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,12 +13,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.GridView;
 
+import sd.energytest.Adapters.AdapterGridView;
 import sd.energytest.Adapters.ListSeries;
+import sd.energytest.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ListSeries listSeries;
+    private GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +31,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -44,14 +52,27 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        listSeries = new ListSeries(this);
+        gridView = (GridView)findViewById(R.id.gridview);
+
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent in = new Intent(MainActivity.this, DetalleSerie.class);
+                in.putExtra("titulo", listSeries.getmSeries().get(position).getTitulo());
+                in.putExtra("fanart", listSeries.getmSeries().get(position).getCapitulos().get(0).getFanart());
+                startActivity(in);
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        listSeries = new ListSeries(this, gridView);
         listSeries.execute();
+
     }
 
     @Override
