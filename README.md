@@ -1,3 +1,5 @@
 # Energy Test
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/gCoKGUTok50" frameborder="0" allowfullscreen></iframe>
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/gCoKGUTok50/0.jpg)](https://www.youtube.com/embed/gCoKGUTok50 "Energy Test")
+
+
