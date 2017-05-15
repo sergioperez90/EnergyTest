@@ -17,7 +17,11 @@ Aplicación que simula la conexión a un servidor de peliculas. Control de la co
 
 Cuando se simula que no hay conexión al servidor se advierte de que las series estan en local y no se podrán reproducir, aunque también se podrían no cargar y no mostrar el listado.
 
+### APK
+
+La apk se encunetra dentro de la carpeta APK/energy_music.apk
+
 ### Video resultado final 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/gCoKGUTok50/0.jpg)](https://www.youtube.com/embed/xKvPvaaKnYM "Energy Test")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/xKvPvaaKnYM/0.jpg)](https://www.youtube.com/embed/xKvPvaaKnYM "Energy Test")
 
 
