@@ -39,9 +39,12 @@ public final class AdapterGridView extends BaseAdapter {
 
         mInflater = LayoutInflater.from(context);
         this.conexion = conexion;
-        for(int i = 0; i<series.size(); i++){
-            mItems.add(new Item(series.get(i).getTitulo(), R.drawable.defecto, series.get(i).getNumTemporadas() + " temporadas"));
+        if(series != null){
+            for(int i = 0; i<series.size(); i++){
+                mItems.add(new Item(series.get(i).getTitulo(), R.drawable.defecto, series.get(i).getNumTemporadas() + " temporadas"));
+            }
         }
+
 
     }
 

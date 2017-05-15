@@ -59,7 +59,11 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
     protected void onPreExecute(){
         super.onPreExecute();
         pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Cargando Series");
+        if(pref.equalsIgnoreCase("actualizar")){
+            pDialog.setMessage("Actualizando Series");
+        }else{
+            pDialog.setMessage("Cargando Series");
+        }
         pDialog.setCancelable(false);
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pDialog.show();
@@ -79,7 +83,6 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
                     series[i].getChapters().getChapters().toArray(capitulos);
                     sqlAdapter.create(series[i].getTitle(), series[i].getNumberOfSeasons(), series[i].getPoster(), series[i].getFanArt(), capitulos);
                 }
-
 
             }catch (ConnectException e){
                 Log.e("ERROR", "ERROR EN LA CONEXION");
@@ -104,11 +107,10 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
         if(!conexion){
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle("Error en la conexión");
-            alert.setMessage("Comprueba que estas conectado a una red wifi o de datos moviles y vuelve a actualizar");
+            alert.setMessage("Comprueba que estas conectado a una red wifi o de datos moviles, recuerda que no podras reproducir ninguna serie hasta que tengas una conexión a internet, ahora estas en local");
             alert.setPositiveButton("OK",null);
             alert.show();
         }
-
         gridView.setAdapter(new AdapterGridView(context, series, hayconexioninternet));
 
         pDialog.dismiss();
