@@ -111,7 +111,7 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
         if(!conexion){
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle("Error en la conexión");
-            alert.setMessage("Comprueba que estas conectado a una red wifi o de datos móviles, recuerda que no podrás reproducir ninguna serie hasta que tengas una conexión a internet, ahora estás en local. Prueba otra vez.");
+            alert.setMessage("Comprueba que estás conectado a una red wifi o de datos móviles, recuerda que no podrás reproducir ninguna serie hasta que tengas una conexión a internet, ahora estás en local. Prueba otra vez.");
             alert.setPositiveButton("OK",null);
             alert.show();
             if(pref.equalsIgnoreCase("primera_vez")){
