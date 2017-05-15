@@ -13,7 +13,11 @@ Aplicación que simula la conexión a un servidor de peliculas. Control de la co
 
 *Se ha testeado en varias versiones de android anteriores a la 7.0, incluida la 4.4, 5.0 y 6.0.*
 
+### Simulación de la conexión
+
+Cuando se simula que no hay conexión al servidor se advierte de que las series estan en local y no se podrán reproducir, aunque también se podrían no cargar y no mostrar el listado.
+
 ### Video resultado final 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/gCoKGUTok50/0.jpg)](https://www.youtube.com/embed/gCoKGUTok50 "Energy Test")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/gCoKGUTok50/0.jpg)](https://www.youtube.com/embed/xKvPvaaKnYM "Energy Test")
 
 
