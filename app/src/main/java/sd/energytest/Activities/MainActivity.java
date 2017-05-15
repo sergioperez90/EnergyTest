@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import sd.energytest.Adapters.AdapterGridView;
 import sd.energytest.Adapters.ListSeries;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity
     private boolean conexion;
     private String [] capitulos;
     private String [] fechas;
-
+    private ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity
             conexion = false;
         }
         gridView = (GridView)findViewById(R.id.gridview);
-
+        imageView = (ImageView) findViewById(R.id.sinconexion);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,12 +96,12 @@ public class MainActivity extends AppCompatActivity
 
         //Comprobamos si es la primera vez que iniciamos o no
         if (settings.getBoolean("firstrun", true)) {
-            listSeries = new ListSeries(this, gridView, "primera_vez", conexion);
+            listSeries = new ListSeries(this, gridView, "primera_vez", conexion, imageView);
             listSeries.execute();
             // Lo cambiamos a false para que no vuelva a ejecutarlo
             settings.edit().putBoolean("firstrun", false).commit();
         }else{
-            listSeries = new ListSeries(this, gridView, "otra_vez", conexion);
+            listSeries = new ListSeries(this, gridView, "otra_vez", conexion, imageView);
             listSeries.execute();
         }
 
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity
 
         //Actualizamos el contenido
         if (id == R.id.actualizar) {
-            listSeries = new ListSeries(this, gridView, "actualizar", conexion);
+            listSeries = new ListSeries(this, gridView, "actualizar", conexion, imageView);
             listSeries.execute();
         }
 

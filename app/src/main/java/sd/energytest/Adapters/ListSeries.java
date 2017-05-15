@@ -3,6 +3,7 @@ package sd.energytest.Adapters;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.energysistem.uitest.exception.TvShowNotFoundException;
@@ -43,8 +45,9 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
     private boolean conexion;
     private boolean hayconexioninternet;
     private ArrayList<Serie> mSeries;
+    private ImageView imageView;
 
-    public ListSeries(Context context, GridView gridView, String pref, boolean hayconexioninternet){
+    public ListSeries(Context context, GridView gridView, String pref, boolean hayconexioninternet, ImageView imageView){
         this.context = context;
         catalogo = new Catalog();
         sqlAdapter = new AdapterSQLite(this.context);
@@ -53,6 +56,7 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
         this.pref = pref;
         this.conexion = true;
         this.hayconexioninternet = hayconexioninternet;
+        this.imageView = imageView;
     }
 
     @Override
@@ -110,6 +114,11 @@ public class ListSeries extends AsyncTask<Void, Void, ArrayList<Serie>> {
             alert.setMessage("Comprueba que estas conectado a una red wifi o de datos moviles, recuerda que no podras reproducir ninguna serie hasta que tengas una conexión a internet, ahora estas en local");
             alert.setPositiveButton("OK",null);
             alert.show();
+            if(pref.equalsIgnoreCase("primera_vez")){
+                imageView.setVisibility(View.VISIBLE);
+            }else{
+                imageView.setVisibility(View.INVISIBLE);
+            }
         }
         gridView.setAdapter(new AdapterGridView(context, series, hayconexioninternet));
 
